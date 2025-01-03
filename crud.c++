@@ -1,129 +1,115 @@
-#include <iostream>   // Include the iostream library for input/output operations
-#include <vector>     // Include the vector library for using std::vector
-#include <string>     // Include the string library for using std::string
+#include <iostream>
+#include <vector>
+#include <string>
 
-using namespace std;  // Use the standard namespace to avoid prefixing std::
+using namespace std;
 
-// Define a structure for an Item
-struct Item {
-    int id;          // Item ID
-    string name;     // Item Name
-    double price;    // Item Price
+//define the data structure
+struct Product {
+    int id;
+    string name;
+    double price;
 
-    // Display the item details
-    void display() const {  // Member function to display an item's details
+    //Display product details
+    void display() const {
         cout << "ID: " << id << ", Name: " << name << ", Price: $" << price << endl;
     }
 };
 
-// Function prototypes
-void createItem(vector<Item>& items);  // Function to create a new item
-void readItems(const vector<Item>& items);  // Function to read and display all items
-void updateItem(vector<Item>& items);  // Function to update an existing item
-void deleteItem(vector<Item>& items);  // Function to delete an item
-
-int main() {
-    vector<Item> items;  // Vector to store items
-    int choice;          // Variable to store user's menu choice
-
-    do {
-        // Display menu options
-        cout << "\n--- CRUD Operations Menu ---\n";
-        cout << "1. Create Item\n";  // Option to create a new item
-        cout << "2. Read Items\n";  // Option to read and display items
-        cout << "3. Update Item\n";  // Option to update an item
-        cout << "4. Delete Item\n";  // Option to delete an item
-        cout << "5. Exit\n";         // Option to exit the program
-        cout << "Enter your choice: ";
-        cin >> choice;  // Get the user's choice
-
-        // Execute the corresponding action based on the choice
-        switch (choice) {
-            case 1:
-                createItem(items);  // Call createItem to add a new item
-                break;
-            case 2:
-                readItems(items);  // Call readItems to display all items
-                break;
-            case 3:
-                updateItem(items);  // Call updateItem to modify an existing item
-                break;
-            case 4:
-                deleteItem(items);  // Call deleteItem to remove an item
-                break;
-            case 5:
-                cout << "Exiting the program.\n";  // Exit message
-                break;
-            default:
-                cout << "Invalid choice. Please try again.\n";  // Handle invalid input
-        }
-    } while (choice != 5);  // Repeat until the user selects exit
-
-    return 0;  // Indicate successful program execution
+void createProduct(vector<Product>& products){
+    Product newProduct;
+    cout << "Enter Product ID: ";
+    cin >> newProduct.id;
+    cin.ignore();
+    cout << "Enter Product Name: ";
+    getline(cin, newProduct.name);
+    cout << "Enter Product Price: ";
+    cin >> newProduct.price;
+    products.push_back(newProduct);
+    cout << "Product added successfully!\n";
 }
 
-// Create a new item
-void createItem(vector<Item>& items) {
-    Item newItem;  // Temporary variable to hold the new item
-
-    cout << "\nEnter Item ID: ";
-    cin >> newItem.id;  // Input item ID
-    cin.ignore();       // Clear input buffer to avoid issues with getline
-    cout << "Enter Item Name: ";
-    getline(cin, newItem.name);  // Input item name
-    cout << "Enter Item Price: ";
-    cin >> newItem.price;  // Input item price
-
-    items.push_back(newItem);  // Add the new item to the vector
-    cout << "Item created successfully!\n";  // Confirmation message
-}
-
-// Read and display all items
-void readItems(const vector<Item>& items) {
-    if (items.empty()) {  // Check if the vector is empty
-        cout << "\nNo items found.\n";  // Message if no items are available
-    } else {
-        cout << "\n--- Item List ---\n";  // Header for the item lists
-        for (const auto& item : items) {  // Iterate through each item in the vector
-            item.display();  // Call the display function to show item details
-        }
+void displayProducts(const vector<Product>& products){
+    if (products.empty())
+    {
+        cout << "No products available.\n";
+        return;
     }
+    
+    for (const auto& product :products)
+    {
+        product.display();
+    }  
 }
 
-// Update an existing item
-void updateItem(vector<Item>& items) {
-    int id;  // Variable to hold the ID of the item to update
-    cout << "\nEnter Item ID to update: ";
-    cin >> id;  // Input the item ID
+void updateProduct(vector<Product>& products){
+    int id;
+    cout << "Enter Product ID to update: ";
+    cin >> id;
+    for (auto& product: products)
+    {
+      if(product.id == id) {
+          cin.ignore();
+          cout << "Enter new Product Name: ";
+          getline(cin, product.name);
+          cout << "Enter new product Price: ";
+          cin >> product.price;
+          cout << "Product updated successfully!\n";
+          return;
+      }   
+    }
+    cout << "Product not found.\n";
+}
 
-    for (auto& item : items) {  // Iterate through the vector to find the item
-        if (item.id == id) {  // Check if the current item matches the ID
-            cin.ignore();  // Clear input buffer
-            cout << "Enter new Item Name: ";
-            getline(cin, item.name);  // Input the new item name
-            cout << "Enter new Item Price: ";
-            cin >> item.price;  // Input the new item price
-            cout << "Item updated successfully!\n";  // Confirmation message
-            return;  // Exit the function after updating
-        }
+void deleteProduct(vector<Product>& products){
+    int id;
+    cout << "Enter Product ID to delete: ";
+    cin >> id;
+    for (auto it = products.begin(); it != products.end(); ++it)
+    {
+       if(it->id == id ){
+           products.erase(it);
+           cout << "Product deleted successfully!\n";
+           return;
+       }
     }
 
-    cout << "Item with ID " << id << " not found.\n";  // Message if ID not found
+    cout << "Product not found.\n";
 }
 
-// Delete an existing item
-void deleteItem(vector<Item>& items) {
-    int id;  // Variable to hold the ID of the item to delete
-    cout << "\nEnter Item ID to delete: ";
-    cin >> id;  // Input the item ID
+int main(){
+    vector<Product> products;
+    int choice;
 
-    for (auto it = items.begin(); it != items.end(); ++it) {  // Iterate through the vector
-        if (it->id == id) {  // Check if the current item matches the ID
-            items.erase(it);  // Remove the item from the vector
-            cout << "Item deleted successfully!\n";  // Confirmation message
-            return;  // Exit the function after deleting
-        }
+do{
+    cout << "\n --- Product Management Menu --- \n";
+    cout << "1. Add Product\n";
+    cout << "2. Display Products\n";
+    cout << "3. Update Products\n";
+    cout << "4. Delete Product\n";
+    cout << "5. Exit\n";
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    switch(choice) {
+        case 1:
+            createProduct(products);
+            break;
+        case 2:
+            displayProducts(products);
+            break;
+        case 3:
+            updateProduct(products);
+            break;
+        case 4:
+            deleteProduct(products);
+            break;
+        case 5:
+            cout << "Exiting program.\n";
+            break;
+        default:
+            cout << "Exiting program.\n";
     }
-
-    cout << "Item with ID " << id << " not found.\n";  // Message if ID not found
+} while (choice != 5);
+return 0;
 }
